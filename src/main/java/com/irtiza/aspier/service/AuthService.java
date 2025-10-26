@@ -8,7 +8,11 @@ import com.irtiza.aspier.repository.CustomerRepository;
 import com.irtiza.aspier.request.SigninRequest;
 import com.irtiza.aspier.request.SignupRequest;
 import com.irtiza.aspier.security.JwtServiceImpl;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +27,9 @@ public class AuthService {
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtServiceImpl jwtServiceImpl;
+    private final AuthenticationManager authenticationManager;
 
+    @Transactional
     public SignupResponse register(SignupRequest signupRequest) {
         Customer customer = Customer.builder()
                 .username(signupRequest.getUsername())
@@ -52,6 +58,14 @@ public class AuthService {
     }
 
     public SigninResponse loginUser(SigninRequest signinRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(signinRequest.getEmail(), signinRequest.getPassword())
+        );
+
+        if (!authentication.isAuthenticated()) {
+            throw new IllegalArgumentException("User is not authenticated");
+        }
+
         Customer customer = customerRepository.findByEmail(signinRequest.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email: " + signinRequest.getEmail()));
 

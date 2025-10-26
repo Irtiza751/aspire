@@ -45,6 +45,7 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
         Claims claims = extractClaims(token);
+//        System.out.println("claims" + claims);
         return claimResolver.apply(claims);
     }
 

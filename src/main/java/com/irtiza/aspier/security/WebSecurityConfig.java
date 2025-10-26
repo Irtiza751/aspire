@@ -1,5 +1,6 @@
 package com.irtiza.aspier.security;
 
+import com.irtiza.aspier.entity.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,9 +35,10 @@ public class WebSecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/products/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/products/**").hasRole("ADMIN")
+//                        TODO: will cater with authorization
+//                        .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/products/**").hasRole(Role.ADMIN.name())
+//                        .requestMatchers(HttpMethod.PATCH, "/products/**").hasRole(Role.ADMIN.name())
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())

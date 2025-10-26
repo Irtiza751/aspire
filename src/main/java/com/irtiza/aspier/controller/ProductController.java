@@ -1,26 +1,37 @@
 package com.irtiza.aspier.controller;
 
+import com.irtiza.aspier.dto.ProductResponse;
 import com.irtiza.aspier.entity.Customer;
+import com.irtiza.aspier.request.ProductRequest;
+import com.irtiza.aspier.service.ProductService;
 import org.jspecify.annotations.NullMarked;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/products")
 public class ProductController {
 
+    private final ProductService productService;
+
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
+
     @GetMapping
     @NullMarked
-    public ResponseEntity<Customer> getProducts() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication != null) {
-            Customer customer = (Customer) authentication.getPrincipal();
-            return ResponseEntity.ok(customer);
-        }
-        throw new IllegalArgumentException("Not authenticated");
+    public ResponseEntity<List<ProductResponse>> getProducts() {
+        return ResponseEntity.ok(productService.findAll());
+    }
+
+    @PostMapping
+    @NullMarked
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest productRequest) {
+        return new ResponseEntity<>(productService.create(productRequest), HttpStatus.CREATED);
     }
 }
