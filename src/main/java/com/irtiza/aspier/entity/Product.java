@@ -34,7 +34,7 @@ public class Product {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinColumn(name = "created_by", referencedColumnName = "id")
-    private Customer creator;
+    private User creator;
 
     @CreationTimestamp
     private LocalDate createdAt;

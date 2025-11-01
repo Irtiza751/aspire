@@ -1,9 +1,9 @@
 package com.irtiza.aspier.service;
 
 import com.irtiza.aspier.dto.ProductResponse;
-import com.irtiza.aspier.entity.Customer;
+import com.irtiza.aspier.entity.User;
 import com.irtiza.aspier.entity.Product;
-import com.irtiza.aspier.repository.CustomerRepository;
+import com.irtiza.aspier.repository.UserRepository;
 import com.irtiza.aspier.repository.ProductRepository;
 import com.irtiza.aspier.request.ProductRequest;
 import jakarta.transaction.Transactional;
@@ -17,17 +17,17 @@ import java.util.List;
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
-    private final CustomerRepository customerRepository;
+    private final UserRepository customerRepository;
 
-    public ProductService(ProductRepository productRepository, CustomerRepository customerRepository) {
+    public ProductService(ProductRepository productRepository, UserRepository customerRepository) {
         this.productRepository = productRepository;
         this.customerRepository = customerRepository;
     }
 
     @Transactional
     public ProductResponse create(ProductRequest productRequest) {
-        Customer customer = getPrincipal(); // authenticated user object
-        Customer savedCustomer = customerRepository.findByEmail(customer.getEmail())
+        User user = getPrincipal(); // authenticated user object
+        User savedUser = customerRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         Product product = Product.builder()
@@ -35,7 +35,7 @@ public class ProductService {
                 .slug(productRequest.getSlug())
                 .price(productRequest.getPrice())
                 .description(productRequest.getDescription())
-                .creator(savedCustomer)
+                .creator(savedUser)
                 .build();
 
         Product savedProduct = productRepository.save(product);
@@ -50,12 +50,12 @@ public class ProductService {
         );
     }
 
-    private Customer getPrincipal() {
+    private User getPrincipal() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication == null || !authentication.isAuthenticated()) {
             throw new IllegalArgumentException("User is not authorize");
         }
-        return (Customer) authentication.getPrincipal();
+        return (User) authentication.getPrincipal();
     }
 
     public List<ProductResponse> findAll() {
