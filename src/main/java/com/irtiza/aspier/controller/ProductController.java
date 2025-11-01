@@ -1,14 +1,11 @@
 package com.irtiza.aspier.controller;
 
 import com.irtiza.aspier.dto.ProductResponse;
-import com.irtiza.aspier.entity.Customer;
 import com.irtiza.aspier.request.ProductRequest;
 import com.irtiza.aspier.service.ProductService;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -2,9 +2,9 @@ package com.irtiza.aspier.service;
 
 import com.irtiza.aspier.dto.SigninResponse;
 import com.irtiza.aspier.dto.SignupResponse;
-import com.irtiza.aspier.entity.Customer;
+import com.irtiza.aspier.entity.User;
 import com.irtiza.aspier.entity.Role;
-import com.irtiza.aspier.repository.CustomerRepository;
+import com.irtiza.aspier.repository.UserRepository;
 import com.irtiza.aspier.request.SigninRequest;
 import com.irtiza.aspier.request.SignupRequest;
 import com.irtiza.aspier.security.JwtServiceImpl;
@@ -24,20 +24,20 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final CustomerRepository customerRepository;
+    private final UserRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtServiceImpl jwtServiceImpl;
     private final AuthenticationManager authenticationManager;
 
     @Transactional
     public SignupResponse register(SignupRequest signupRequest) {
-        Customer customer = Customer.builder()
+        User user = User.builder()
                 .username(signupRequest.getUsername())
                 .email(signupRequest.getEmail())
                 .password(passwordEncoder.encode(signupRequest.getPassword()))
                 .role(Role.USER)
                 .build();
-        Customer savedCustomer = customerRepository.save(customer);
+        User savedCustomer = customerRepository.save(user);
         return SignupResponse.builder()
                 .id(savedCustomer.getId())
                 .username(savedCustomer.getUsername())
@@ -48,11 +48,11 @@ public class AuthService {
 
     public List<SignupResponse> getCustomers() {
         return customerRepository.findAll().stream()
-                .map(customer -> SignupResponse.builder()
-                        .id(customer.getId())
-                        .username(customer.getUsername())
-                        .email(customer.getEmail())
-                        .role(customer.getRole())
+                .map(user -> SignupResponse.builder()
+                        .id(user.getId())
+                        .username(user.getUsername())
+                        .email(user.getEmail())
+                        .role(user.getRole())
                         .build())
                 .toList();
     }
@@ -66,14 +66,14 @@ public class AuthService {
             throw new IllegalArgumentException("User is not authenticated");
         }
 
-        Customer customer = customerRepository.findByEmail(signinRequest.getEmail())
+        User user = customerRepository.findByEmail(signinRequest.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email: " + signinRequest.getEmail()));
 
         Map<String, String> claims = new Hashtable<>();
-        claims.put("userId", customer.getId().toString());
-        claims.put("userRole", customer.getRole().name());
+        claims.put("userId", user.getId().toString());
+        claims.put("userRole", user.getRole().name());
 
-        String jwt = jwtServiceImpl.generateToken(claims, customer);
+        String jwt = jwtServiceImpl.generateToken(claims, user);
         return new SigninResponse(jwt);
     }
 }
