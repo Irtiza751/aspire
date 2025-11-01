@@ -1,6 +1,6 @@
 package com.irtiza.aspier.config;
 
-import com.irtiza.aspier.repository.CustomerRepository;
+import com.irtiza.aspier.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.modelmapper.ModelMapper;
@@ -15,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 public class AppConfig {
-    private final CustomerRepository customerRepository;
+    private final UserRepository customerRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
