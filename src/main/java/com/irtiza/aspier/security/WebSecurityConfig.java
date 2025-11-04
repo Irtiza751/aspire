@@ -37,7 +37,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
 //                        TODO: will cater with authorization
 //                        .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
-//                        .requestMatchers(HttpMethod.POST, "/products/**").hasRole(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST, "/products").hasRole("ADMIN")
 //                        .requestMatchers(HttpMethod.PATCH, "/products/**").hasRole(Role.ADMIN.name())
                         .anyRequest().authenticated()
                 )

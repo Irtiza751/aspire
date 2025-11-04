@@ -10,15 +10,18 @@ import com.irtiza.aspier.request.SignupRequest;
 import com.irtiza.aspier.security.JwtServiceImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -35,14 +38,14 @@ public class AuthService {
                 .username(signupRequest.getUsername())
                 .email(signupRequest.getEmail())
                 .password(passwordEncoder.encode(signupRequest.getPassword()))
-                .role(Role.USER)
+                .roles(Set.of(Role.ROLE_CUSTOMER))
                 .build();
         User savedCustomer = customerRepository.save(user);
         return SignupResponse.builder()
                 .id(savedCustomer.getId())
                 .username(savedCustomer.getUsername())
                 .email(savedCustomer.getEmail())
-                .role(savedCustomer.getRole())
+                .roles(savedCustomer.getAuthorities())
                 .build();
     }
 
@@ -52,7 +55,7 @@ public class AuthService {
                         .id(user.getId())
                         .username(user.getUsername())
                         .email(user.getEmail())
-                        .role(user.getRole())
+                        .roles(user.getAuthorities())
                         .build())
                 .toList();
     }
@@ -71,7 +74,6 @@ public class AuthService {
 
         Map<String, String> claims = new Hashtable<>();
         claims.put("userId", user.getId().toString());
-        claims.put("userRole", user.getRole().name());
 
         String jwt = jwtServiceImpl.generateToken(claims, user);
         return new SigninResponse(jwt);

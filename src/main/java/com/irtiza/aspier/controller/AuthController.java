@@ -32,7 +32,7 @@ public class AuthController {
                 .body(authService.register(request));
     }
 
-    @GetMapping("/customers")
+    @GetMapping("/users")
     @NullMarked
     public ResponseEntity<List<SignupResponse>> getCustomers() {
         return ResponseEntity.ok(authService.getCustomers());
