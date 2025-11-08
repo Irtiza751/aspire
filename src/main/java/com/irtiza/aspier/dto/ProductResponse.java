@@ -1,7 +1,10 @@
 package com.irtiza.aspier.dto;
 
 
+import com.irtiza.aspier.request.ColorRequest;
+
 import java.time.LocalDate;
+import java.util.List;
 
 public class ProductResponse {
     private Long id;
@@ -9,18 +12,20 @@ public class ProductResponse {
     private String name;
     private String description;
     private float price;
+    private List<ColorRequest> colors;
 
     private LocalDate createdAt;
     private LocalDate updatedAt;
 
     public ProductResponse() {}
 
-    public ProductResponse(Long id, String slug, String name, String description, float price, LocalDate createdAt, LocalDate updatedAt) {
+    public ProductResponse(Long id, String slug, String name, String description, float price, List<ColorRequest> colors, LocalDate createdAt, LocalDate updatedAt) {
         this.id = id;
         this.slug = slug;
         this.name = name;
         this.description = description;
         this.price = price;
+        this.colors = colors;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -79,5 +84,13 @@ public class ProductResponse {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<ColorRequest> getColors() {
+        return colors;
+    }
+
+    public void setColors(List<ColorRequest> colors) {
+        this.colors = colors;
     }
 }

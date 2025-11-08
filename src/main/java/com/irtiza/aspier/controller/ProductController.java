@@ -3,6 +3,7 @@ package com.irtiza.aspier.controller;
 import com.irtiza.aspier.dto.ProductResponse;
 import com.irtiza.aspier.request.ProductRequest;
 import com.irtiza.aspier.service.ProductService;
+import jakarta.validation.Valid;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ public class ProductController {
 
     private final ProductService productService;
 
-    public ProductController(ProductService productService) {
+    private ProductController(ProductService productService) {
         this.productService = productService;
     }
 
@@ -28,7 +29,7 @@ public class ProductController {
 
     @PostMapping
     @NullMarked
-    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest productRequest) {
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody @Valid ProductRequest productRequest) {
         return new ResponseEntity<>(productService.create(productRequest), HttpStatus.CREATED);
     }
 }
