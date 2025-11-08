@@ -46,4 +46,12 @@ public class Product {
 
     @UpdateTimestamp
     private LocalDate updatedAt;
+
+    public void addProductColor(ProductColor color) {
+        if(colors == null) {
+            colors = new ArrayList<>();
+        }
+        colors.add(color);
+        color.setProduct(this);
+    }
 }

@@ -16,6 +16,8 @@ public class ProductColor {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    public ProductColor() { }
+
     public ProductColor(String color) {
         this.color = color;
     }

@@ -4,6 +4,7 @@ import com.irtiza.aspier.dto.ProductResponse;
 import com.irtiza.aspier.entity.ProductColor;
 import com.irtiza.aspier.entity.User;
 import com.irtiza.aspier.entity.Product;
+import com.irtiza.aspier.repository.ColorRepository;
 import com.irtiza.aspier.repository.UserRepository;
 import com.irtiza.aspier.repository.ProductRepository;
 import com.irtiza.aspier.request.ColorRequest;
@@ -19,10 +20,12 @@ import java.util.List;
 public class ProductService {
     private final ProductRepository productRepository;
     private final UserRepository customerRepository;
+    private final ColorRepository colorRepository;
 
-    public ProductService(ProductRepository productRepository, UserRepository customerRepository) {
+    public ProductService(ProductRepository productRepository, UserRepository customerRepository, ColorRepository colorRepository) {
         this.productRepository = productRepository;
         this.customerRepository = customerRepository;
+        this.colorRepository = colorRepository;
     }
 
     @Transactional
@@ -31,24 +34,28 @@ public class ProductService {
         User savedUser = customerRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Product.ProductBuilder productBuilder = Product.builder()
+        Product product = Product.builder()
                 .name(productRequest.getName())
                 .slug(productRequest.getSlug())
                 .price(productRequest.getPrice())
                 .description(productRequest.getDescription())
-                .creator(savedUser);
+                .creator(savedUser)
+                .build();
 
         if(productRequest.getColors() != null && !productRequest.getColors().isEmpty()) {
-           List<ProductColor> colors = productRequest.getColors().stream()
-                   .map(color -> new ProductColor(color.getColor()))
-                   .toList();
-           productBuilder.colors(colors);
+            for (ColorRequest color : productRequest.getColors()) {
+                ProductColor existingColor = colorRepository
+                        .findByColor(color.getColor())
+                        .orElse(new ProductColor(color.getColor()));
+
+                product.addProductColor(existingColor);
+            }
         }
 
-        Product savedProduct = productRepository.save(productBuilder.build());
+        Product savedProduct = productRepository.save(product);
         ProductResponse response = new ProductResponse();
 
-        response.setId(savedProduct.getId());
+    response.setId(savedProduct.getId());
         response.setSlug(savedProduct.getSlug());
         response.setName(savedProduct.getName());
         response.setDescription(savedProduct.getDescription());
