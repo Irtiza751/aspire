@@ -17,9 +17,8 @@ public class ProductImage {
 
     public ProductImage() {}
 
-    public ProductImage(String url, Product product) {
+    public ProductImage(String url) {
         this.url = url;
-        this.product = product;
     }
 
     public Long getId() {

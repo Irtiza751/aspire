@@ -1,6 +1,7 @@
 package com.irtiza.aspier.controller;
 
 import com.irtiza.aspier.dto.ProductResponse;
+import com.irtiza.aspier.dto.SuccessResponse;
 import com.irtiza.aspier.request.ProductRequest;
 import com.irtiza.aspier.service.ProductService;
 import jakarta.validation.Valid;
@@ -29,7 +30,7 @@ public class ProductController {
 
     @PostMapping
     @NullMarked
-    public ResponseEntity<ProductResponse> createProduct(@RequestBody @Valid ProductRequest productRequest) {
+    public ResponseEntity<SuccessResponse> createProduct(@RequestBody @Valid ProductRequest productRequest) {
         return new ResponseEntity<>(productService.create(productRequest), HttpStatus.CREATED);
     }
 }

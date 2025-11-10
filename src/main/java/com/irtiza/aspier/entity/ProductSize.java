@@ -18,9 +18,8 @@ public class ProductSize {
 
     public ProductSize() {}
 
-    public ProductSize(String size, Product product) {
+    public ProductSize(String size) {
         this.size = size;
-        this.product = product;
     }
 
     public Long getId() {
