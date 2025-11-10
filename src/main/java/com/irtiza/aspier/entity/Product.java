@@ -39,7 +39,13 @@ public class Product {
     private User creator;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductColor> colors = new ArrayList<>();
+    private List<ProductColor> colors;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductImage> images;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductSize> sizes;
 
     @CreationTimestamp
     private LocalDate createdAt;
@@ -53,5 +59,21 @@ public class Product {
         }
         colors.add(color);
         color.setProduct(this);
+    }
+
+    public void addProductImage(ProductImage image) {
+        if(images == null) {
+            images = new ArrayList<>();
+        }
+        images.add(image);
+        image.setProduct(this);
+    }
+
+    public void addProductSize(ProductSize size) {
+        if(sizes == null) {
+            sizes = new ArrayList<>();
+        }
+        sizes.add(size);
+        size.setProduct(this);
     }
 }
