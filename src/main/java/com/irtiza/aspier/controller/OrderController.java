@@ -20,7 +20,7 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getOrders() {
-        return ResponseEntity.ok(orderService.getOrders());
+    public ResponseEntity<?> getOrders(@RequestParam int page, @RequestParam int size) {
+        return ResponseEntity.ok(orderService.getOrders(page, size));
     }
 }

@@ -10,7 +10,10 @@ import com.irtiza.aspier.repository.ProductRepository;
 import com.irtiza.aspier.repository.UserRepository;
 import com.irtiza.aspier.request.CreateOrderRequest;
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.Nullable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -54,12 +57,14 @@ public class OrderService {
         return new SuccessResponse("Order created successfully", HttpStatus.CREATED.ordinal());
     }
 
-    public List<OrderResponse> getOrders() {
+    public Page<OrderResponse> getOrders(int page, int size) {
         User user = AuthUser.getPrincipal();
-        List<OrderItem> orderItems = orderItemRepository.findByOrderUserId(user.getId());
 
-        return orderItems.stream()
-                .map(orderItem -> OrderResponse.builder()
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+        Page<OrderItem> orderItems = orderItemRepository.findByOrderUserId(user.getId(), pageable);
+
+        return orderItems.map(orderItem -> OrderResponse.builder()
                         .id(orderItem.getOrder().getId())
                         .createdAt(orderItem.getOrder().getCreatedAt())
                         .updatedAt(orderItem.getOrder().getUpdatedAt())
@@ -68,7 +73,7 @@ public class OrderService {
                         .product(orderItem.getProduct().getName())
                         .quantity(orderItem.getQuantity())
                         .price(orderItem.getPrice())
-                        .build())
-                .toList();
+                        .build()
+        );
     }
 }
