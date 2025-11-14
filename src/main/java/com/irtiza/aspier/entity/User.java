@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -41,12 +40,14 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders;
+
     @CreationTimestamp
     private LocalDate createdAt;
 
     @UpdateTimestamp
     private LocalDate updatedAt;
-
 
     @Override
     @NullMarked
