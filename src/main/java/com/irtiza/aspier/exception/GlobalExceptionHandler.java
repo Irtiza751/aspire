@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class GlobalExceptionHandler {
 
     @NullMarked
-    @ExceptionHandler({ResponseStatusException.class, ValidationException.class})
+    @ExceptionHandler({ResponseStatusException.class, ValidationException.class, IllegalArgumentException.class})
     public ResponseEntity<ErrorResponse> handleClientError(Exception exception) {
         ErrorResponse error = new ErrorResponse();
         error.setMessage(exception.getMessage());

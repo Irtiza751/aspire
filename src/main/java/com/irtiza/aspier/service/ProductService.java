@@ -11,8 +11,8 @@ import com.irtiza.aspier.request.ProductRequest;
 import com.irtiza.aspier.request.ProductSizeRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+//import org.springframework.security.core.Authentication;
+//import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,18 +22,18 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final UserRepository customerRepository;
     private final ColorRepository colorRepository;
-    private final ProductImageRepository productImageRepository;
+//    private final ProductImageRepository productImageRepository;
     private final ProductSizeRepository productSizeRepository;
 
     public ProductService(ProductRepository productRepository,
                           UserRepository customerRepository,
                           ColorRepository colorRepository,
-                          ProductImageRepository productImageRepository,
+//                          ProductImageRepository productImageRepository,
                           ProductSizeRepository productSizeRepository) {
         this.productRepository = productRepository;
         this.customerRepository = customerRepository;
         this.colorRepository = colorRepository;
-        this.productImageRepository = productImageRepository;
+//        this.productImageRepository = productImageRepository;
         this.productSizeRepository = productSizeRepository;
     }
 
