@@ -27,8 +27,8 @@ public class GlobalExceptionHandler {
         error.setStatus(HttpStatus.BAD_REQUEST.value());
         error.setTimestamps(System.currentTimeMillis());
 
-        exception.getAllErrors().forEach(e -> {
-            String field = e.getObjectName();
+        exception.getBindingResult().getFieldErrors().forEach(e -> {
+            String field = e.getField();
             String message = e.getDefaultMessage();
 
             fields.put(field, message);

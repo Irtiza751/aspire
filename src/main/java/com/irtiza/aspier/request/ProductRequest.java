@@ -17,7 +17,7 @@ public class ProductRequest {
     @NotBlank(message = "name is required")
     private String name;
     @NotNull(message = "price is required")
-    private float price;
+    private Float price;
     // nullable fields
     private String description;
     private List<ColorRequest> colors;
