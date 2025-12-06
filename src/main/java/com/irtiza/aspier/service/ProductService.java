@@ -4,16 +4,19 @@ import com.irtiza.aspier.common.AuthUser;
 import com.irtiza.aspier.dto.ProductResponse;
 import com.irtiza.aspier.dto.SuccessResponse;
 import com.irtiza.aspier.entity.*;
-import com.irtiza.aspier.repository.*;
+import com.irtiza.aspier.mappers.ProductMapper;
+import com.irtiza.aspier.repository.ColorRepository;
+import com.irtiza.aspier.repository.ProductRepository;
+import com.irtiza.aspier.repository.ProductSizeRepository;
+import com.irtiza.aspier.repository.UserRepository;
 import com.irtiza.aspier.request.ColorRequest;
 import com.irtiza.aspier.request.ProductImageRequest;
 import com.irtiza.aspier.request.ProductRequest;
 import com.irtiza.aspier.request.ProductSizeRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
-//import org.springframework.security.core.Authentication;
-//import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -22,7 +25,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final UserRepository customerRepository;
     private final ColorRepository colorRepository;
-//    private final ProductImageRepository productImageRepository;
+    //    private final ProductImageRepository productImageRepository;
     private final ProductSizeRepository productSizeRepository;
 
     public ProductService(ProductRepository productRepository,
@@ -53,7 +56,7 @@ public class ProductService {
 
         Product savedProduct = productRepository.save(product);
 
-        if(productRequest.getColors() != null && !productRequest.getColors().isEmpty()) {
+        if (productRequest.getColors() != null && !productRequest.getColors().isEmpty()) {
             for (ColorRequest color : productRequest.getColors()) {
                 ProductColor existingColor = colorRepository
                         .findByColor(color.getColor())
@@ -63,7 +66,7 @@ public class ProductService {
             }
         }
 
-        if(productRequest.getSizes() != null & !productRequest.getSizes().isEmpty()) {
+        if (productRequest.getSizes() != null & !productRequest.getSizes().isEmpty()) {
             for (ProductSizeRequest size : productRequest.getSizes()) {
                 ProductSize existingSize = productSizeRepository
                         .findBySize(size.getSize())
@@ -73,7 +76,7 @@ public class ProductService {
             }
         }
 
-        if(productRequest.getImages() != null & !productRequest.getImages().isEmpty()) {
+        if (productRequest.getImages() != null & !productRequest.getImages().isEmpty()) {
             for (ProductImageRequest image : productRequest.getImages()) {
                 savedProduct.addProductImage(new ProductImage(image.getUrl()));
             }
@@ -90,11 +93,26 @@ public class ProductService {
                         .name(product.getName())
                         .description(product.getDescription())
                         .price(product.getPrice())
-                        .sizes(product.getSizes().stream().map(s -> new ProductSizeRequest(s.getSize())).toList())
-                        .images(product.getImages().stream().map(i -> new ProductImageRequest(i.getUrl())).toList())
-                        .colors(product.getColors().stream().map(c -> new ColorRequest(c.getColor())).toList())
                         .updatedAt(product.getUpdatedAt())
                         .createdAt(product.getCreatedAt())
                         .build()).toList();
+    }
+
+    public ProductResponse getSingleProduct(Long id) {
+        return productRepository.findById(id)
+                .map(prod -> ProductResponse.builder()
+                        .id(prod.getId())
+                        .slug(prod.getSlug())
+                        .name(prod.getName())
+                        .description(prod.getDescription())
+                        .price(prod.getPrice())
+                        .createdAt(prod.getCreatedAt())
+                        .updatedAt(prod.getUpdatedAt())
+                        .colors(prod.getColors().stream().map(ProductMapper::mapToRequest).toList())
+                        .images(prod.getImages().stream().map(ProductMapper::mapToRequest).toList())
+                        .sizes(prod.getSizes().stream().map(ProductMapper::mapToRequest).toList())
+                        .build()
+                )
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
     }
 }
