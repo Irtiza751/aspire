@@ -34,9 +34,15 @@ public class ProductController {
         return new ResponseEntity<>(productService.create(productRequest), HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
     @NullMarked
+    @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getSingleProduct(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getSingleProduct(id));
+    }
+
+    @NullMarked
+    @PutMapping("/{id}")
+    public ResponseEntity<SuccessResponse> updateProduct(@PathVariable Long id, @RequestBody @Valid ProductRequest request) {
+        return ResponseEntity.ok(productService.updateProduct(id, request));
     }
 }
