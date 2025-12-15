@@ -15,9 +15,11 @@ import com.irtiza.aspier.request.ProductRequest;
 import com.irtiza.aspier.request.ProductSizeRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -114,5 +116,18 @@ public class ProductService {
                         .build()
                 )
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+    }
+
+    public SuccessResponse updateProduct(Long id, ProductRequest request) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        product.setName(request.getName());
+        product.setDescription(request.getDescription());
+        product.setUpdatedAt(LocalDate.now());
+        product.setSlug(request.getSlug());
+        product.setPrice(request.getPrice());
+
+        return new SuccessResponse("Product successfully updated", HttpStatus.OK.value());
     }
 }
